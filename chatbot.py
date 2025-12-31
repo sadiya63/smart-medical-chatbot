@@ -1,11 +1,19 @@
 import os
+import re
+import nltk
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import nltk
 from nltk.tokenize import word_tokenize
-import re
 
-nltk.data.path.append(os.path.join(os.getcwd(), "nltk_data"))
+# 🔹 Fix NLTK path for Render
+NLTK_DATA_DIR = os.path.join(os.getcwd(), "nltk_data")
+nltk.data.path.append(NLTK_DATA_DIR)
+
+# 🔹 Download punkt safely (only if missing)
+try:
+    nltk.data.find("tokenizers/punkt")
+except LookupError:
+    nltk.download("punkt", download_dir=NLTK_DATA_DIR)
 
 app = Flask(__name__)
 CORS(app)
@@ -15,6 +23,7 @@ def chat():
     data = request.get_json()
     user_message = data.get("message", "").lower()
 
+    # remove punctuation
     user_message = re.sub(r"[^\w\s]", "", user_message)
 
     tokens = word_tokenize(user_message)
@@ -75,9 +84,9 @@ def chat():
             "I can help with:\n"
             "• Registration & Login\n"
             "• Booking Appointments\n"
-            "• Doctor information\n"
-            "• Basic medical guidance\n"
-            "• Emergency help•"
+            "• Doctor Information\n"
+            "• Basic Medical Guidance\n"
+            "• Emergency Help"
         )
 
     return jsonify({"reply": reply})
@@ -85,4 +94,3 @@ def chat():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5001))
     app.run(host="0.0.0.0", port=port)
-
