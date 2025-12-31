@@ -21,7 +21,7 @@ CORS(app)
 
 @app.route("/chat", methods=["POST"])
 def chat():
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
     user_message = data.get("message", "").lower()
 
     # remove punctuation
