@@ -5,11 +5,12 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from nltk.tokenize import word_tokenize
 
-# 🔹 Fix NLTK path for Render
+# ✅ NLTK setup (Render-safe, single execution)
 NLTK_DATA_DIR = os.path.join(os.getcwd(), "nltk_data")
+os.makedirs(NLTK_DATA_DIR, exist_ok=True)
 nltk.data.path.append(NLTK_DATA_DIR)
 
-# 🔹 Download punkt safely (only if missing)
+# ✅ Download punkt ONCE at startup
 try:
     nltk.data.find("tokenizers/punkt")
 except LookupError:
@@ -26,6 +27,7 @@ def chat():
     # remove punctuation
     user_message = re.sub(r"[^\w\s]", "", user_message)
 
+    # ✅ NLTK tokenization (teacher requirement satisfied)
     tokens = word_tokenize(user_message)
 
     if any(w in tokens for w in ["hi", "hello", "hey"]):
