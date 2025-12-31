@@ -5,7 +5,7 @@ import nltk
 from nltk.tokenize import word_tokenize
 import re
 
-nltk.download("punkt")
+nltk.data.path.append(os.path.join(os.getcwd(), "nltk_data"))
 
 app = Flask(__name__)
 CORS(app)
